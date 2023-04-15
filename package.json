@@ -1,0 +1,24 @@
+{
+  "name": "baca",
+  "version": "1.0.0",
+  "description": "Baca Forum",
+  "main": "dist/index.js",
+  "author": "Kazuka Ono",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "node dist/index.js",
+    "tsc": "tsc",
+    "build": "yarn tsc && echo 'Build successful.'",
+    "dev": "yarn build --watch"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "typescript": "^4.4.3"
+  }
+}

@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+      "target": "es6",
+      "module": "commonjs",
+      "outDir": "dist",
+      "esModuleInterop": true,
+      "strict": true,
+      "baseUrl": "./",
+      "paths": {
+        "@src/*": ["src/*"]
+      }
+    },
+    "include": [
+        "src/**/*.ts",
+        "src/interfaces/**/*.ts"
+      ],
+}
