@@ -1,7 +1,7 @@
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import { ISubforumSub } from '@src/interfaces/SubforumSubs/ISubforumSub';
 
-const SubforumSubSchema = new mongoose.Schema(
+const SubforumSubSchema : Schema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,

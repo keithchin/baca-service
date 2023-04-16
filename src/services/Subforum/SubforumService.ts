@@ -1,4 +1,4 @@
-import { Model } from 'mongoose'
+import { Model, ObjectId } from 'mongoose'
 import { ISubforum } from '@src/interfaces/Subforum/ISubforum';
 import { ISubforumService } from '@src/interfaces/Subforum/ISubforumService';
 import subforumModel from './SubforumModel';
@@ -28,7 +28,7 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  async getSubforumById(id: string): Promise<ISubforum | null> {
+  async getSubforumById(id: ObjectId): Promise<ISubforum | null> {
     try {
       const subforum = await SubforumModel.findById(id);
       return subforum;
@@ -38,7 +38,7 @@ export class SubforumService implements ISubforumService {
   }
 
   async updateSubforumById(
-    id: string,
+    id: ObjectId,
     updateSubforumDto: UpdateSubforumDto
   ): Promise<ISubforum | null> {
     try {
@@ -52,7 +52,7 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  async deleteSubforumById(id: string): Promise<boolean> {
+  async deleteSubforumById(id: ObjectId): Promise<boolean> {
     try {
       const result = await SubforumModel.deleteOne({ _id: id });
       return result.deletedCount === 1;

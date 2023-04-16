@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model, ObjectId } from 'mongoose';
 import { ISubforumSub } from '@src/interfaces/SubforumSubs/ISubforumSub';
 import { ISubforumSubService } from '@src/interfaces/SubforumSubs/ISubforumSubService';
 import { IUserService } from '@src/interfaces/User/IUserService';
@@ -16,8 +16,8 @@ export class SubforumSubService implements ISubforumSubService {
     
 
   async subscribeToSubforum(
-    userId: string,
-    subforumId: string
+    userId: ObjectId,
+    subforumId: ObjectId
   ): Promise<ISubforumSub> {
     const user = await this.userService.getUserById(userId);
     const subforum = await this.subforumService.getSubforumById(subforumId);
@@ -48,8 +48,8 @@ export class SubforumSubService implements ISubforumSubService {
     return subscription;
   }
   async unsubscribeFromSubforum(
-    userId: string,
-    subforumId: string
+    userId: ObjectId,
+    subforumId: ObjectId
   ): Promise<boolean> {
     const existingSubscription = await SubforumSubModel.findOne({
       userId,
@@ -63,12 +63,12 @@ export class SubforumSubService implements ISubforumSubService {
     const result = await SubforumSubModel.deleteOne({ userId, subforumId });
     return result.deletedCount === 1;
   }
-  async getSubscribedSubforums(userId: string): Promise<ISubforumSub[]> {
+  async getSubscribedSubforums(userId: ObjectId): Promise<ISubforumSub[]> {
     const subscriptions = await SubforumSubModel.find({ userId });
     return subscriptions;
   }
 
-  async getSubscribers(subforumId: string): Promise<ISubforumSub[]> {
+  async getSubscribers(subforumId: ObjectId): Promise<ISubforumSub[]> {
     const subscribers = await SubforumSubModel.find({ subforumId });
     return subscribers;
   }

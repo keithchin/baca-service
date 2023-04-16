@@ -1,9 +1,10 @@
 import { ISubforumSub } from "./ISubforumSub";
+import { ObjectId } from "mongoose";
 import CreateSubforumSubDto from "@src/dto/SubforumSub/CreateSubforumSubDto";
 
 export interface ISubforumSubService {
-  subscribeToSubforum(userId: string, subforumId: string): Promise<ISubforumSub>;
-  unsubscribeFromSubforum(userId: string, subforumId: string): Promise<boolean>;
-  getSubscribedSubforums(userId: string): Promise<ISubforumSub[]>;
-  getSubscribers(subforumId: string): Promise<ISubforumSub[]>;
+  subscribeToSubforum(userId: ObjectId, subforumId: ObjectId): Promise<ISubforumSub>;
+  unsubscribeFromSubforum(userId: ObjectId, subforumId: ObjectId): Promise<boolean>;
+  getSubscribedSubforums(userId: ObjectId): Promise<ISubforumSub[]>;
+  getSubscribers(subforumId: ObjectId): Promise<ISubforumSub[]>;
 }

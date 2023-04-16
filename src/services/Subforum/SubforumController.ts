@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
+import mongoose from 'mongoose';
 import { ISubforumService } from "@src/interfaces/Subforum/ISubforumService";
 import CreateSubforumDTO from "@src/dto/Subforum/CreateSubforumDto";
-
 
 export class SubforumController {
   constructor(private readonly subforumService: ISubforumService) {}
@@ -22,7 +22,7 @@ export class SubforumController {
   getSubforum = async(req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const subforum = await this.subforumService.getSubforumById(id);
+      const subforum = await this.subforumService.getSubforumById(new mongoose.Schema.Types.ObjectId(id));
       if (subforum) {
         res.status(200).json(subforum);
       } else {
@@ -48,7 +48,7 @@ export class SubforumController {
     try {
       const { id } = req.params;
       const { title, description } = req.body;
-      const subforum = await this.subforumService.updateSubforumById(id,{ title, description});
+      const subforum = await this.subforumService.updateSubforumById(new mongoose.Schema.Types.ObjectId(id),{ title, description});
       if (subforum) {
         res.status(200).json(subforum);
       } else {
@@ -63,7 +63,7 @@ export class SubforumController {
   deleteSubforum = async(req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const subforum = await this.subforumService.deleteSubforumById(id);
+      const subforum = await this.subforumService.deleteSubforumById(new mongoose.Schema.Types.ObjectId(id));
       if (subforum) {
         res.status(200).json(subforum);
       } else {

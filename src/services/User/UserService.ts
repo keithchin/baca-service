@@ -1,4 +1,4 @@
-import { Model } from 'mongoose'
+import { Model, ObjectId } from 'mongoose'
 import { IUser } from '../../interfaces/User/IUser';
 import { IUserService } from '../../interfaces/User/IUserService';
 import userModel from './UserModel';
@@ -18,7 +18,16 @@ export class UserService implements IUserService {
       }
     }
   
-    async getUserById(userId: string): Promise<IUser | null> {
+    public async getUserByUsername(username: string): Promise<IUser | null> {
+      try {
+        const user = await UserModel.findOne({ username });
+        return user;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    }
+
+    async getUserById(userId: ObjectId): Promise<IUser | null> {
       try {
         const user = await UserModel.findById(userId);
         return user;
@@ -37,7 +46,7 @@ export class UserService implements IUserService {
         }
       }
   
-    async updateUserById(userId: string, updateUserDto: CreateUpdateUserDto): Promise<IUser | null> {
+    async updateUserById(userId: ObjectId, updateUserDto: CreateUpdateUserDto): Promise<IUser | null> {
       try {
         const user = await UserModel.findByIdAndUpdate(userId, updateUserDto, { new: true });
         return user;
@@ -46,7 +55,7 @@ export class UserService implements IUserService {
       }
     }
   
-    async deleteUserById(userId: string): Promise<boolean> {
+    async deleteUserById(userId: ObjectId): Promise<boolean> {
       try {
         const result = await UserModel.findByIdAndDelete(userId);
         return result !== null;

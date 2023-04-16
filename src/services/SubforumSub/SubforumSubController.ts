@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import { ISubforumSubService } from "@src/interfaces/SubforumSubs/ISubforumSubService";
 import { IUserService } from '@src/interfaces/User/IUserService';
 import { ISubforumService } from '@src/interfaces/Subforum/ISubforumService';
@@ -16,7 +17,7 @@ export class SubforumSubController {
   subscribeToSubforum = async (req: Request, res: Response) => {
     try {
       const { userId, subforumId } = req.body;
-      const subscription = await this.subforumSubService.subscribeToSubforum(userId, subforumId);
+      const subscription = await this.subforumSubService.subscribeToSubforum(new mongoose.Schema.Types.ObjectId(userId), new mongoose.Schema.Types.ObjectId(subforumId));
       res.status(201).json(subscription);
     } catch (error) {
       console.error(error);
@@ -37,7 +38,7 @@ export class SubforumSubController {
   unsubscribeFromSubforum = async (req: Request, res: Response) => {
     try {
       const { userId, subforumId } = req.body;
-      const subscription = await this.subforumSubService.unsubscribeFromSubforum(userId, subforumId);
+      const subscription = await this.subforumSubService.unsubscribeFromSubforum(new mongoose.Schema.Types.ObjectId(userId), new mongoose.Schema.Types.ObjectId(subforumId));
       res.status(200).json(subscription);
     } catch (error) {
       console.error(error);
@@ -56,7 +57,7 @@ export class SubforumSubController {
   getSubscribedSubforums = async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
-      const subscriptions = await this.subforumSubService.getSubscribedSubforums(userId);
+      const subscriptions = await this.subforumSubService.getSubscribedSubforums(new mongoose.Schema.Types.ObjectId(userId));
       res.status(200).json(subscriptions);
     } catch (error) {
       console.error(error);
@@ -67,7 +68,7 @@ export class SubforumSubController {
   getSubscribers = async (req: Request, res: Response) => {
     try {
       const { subforumId } = req.params;
-      const subscribers = await this.subforumSubService.getSubscribers(subforumId);
+      const subscribers = await this.subforumSubService.getSubscribers(new mongoose.Schema.Types.ObjectId(subforumId));
       res.status(200).json(subscribers);
     } catch (error) {
       console.error(error);

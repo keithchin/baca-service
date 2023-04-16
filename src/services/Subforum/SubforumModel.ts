@@ -1,8 +1,8 @@
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Schema } from 'mongoose';
 import { ISubforum } from '@src/interfaces/Subforum/ISubforum'
    
 
-const SubforumSchema = new mongoose.Schema(
+const SubforumSchema: Schema = new mongoose.Schema(
   {
     title: {
       type: String,

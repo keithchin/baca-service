@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import { IUserService } from "@src/interfaces/User/IUserService";
 import CreateUpdateUserDto from "@src/dto/User/CreateUpdateUserDto";
 
@@ -20,7 +21,7 @@ export class UserController {
   getUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const user = await this.userService.getUserById(id);
+      const user = await this.userService.getUserById(new mongoose.Schema.Types.ObjectId(id));
       if (!user) {
         return res.status(404).send("User not found");
       }
@@ -50,7 +51,7 @@ export class UserController {
     try {
       const { id } = req.params;
       const update = req.body;
-      const updatedUser = await this.userService.updateUserById(id, update);
+      const updatedUser = await this.userService.updateUserById(new mongoose.Schema.Types.ObjectId(id), update);
       if (!updatedUser) {
         return res.status(404).send("User not found");
       }
@@ -64,7 +65,7 @@ export class UserController {
   deleteUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const success = await this.userService.deleteUserById(id);
+      const success = await this.userService.deleteUserById(new mongoose.Schema.Types.ObjectId(id));
       if (!success) {
         return res.status(404).send("User not found");
       }
