@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 
 import { subforumRoutes } from './routes/subforumRoutes';
 import { userRoutes } from './routes/userRoutes';
+import { subforumSubRoutes } from './routes/subforumSubRoutes';
 import { ConnectOptions } from 'mongoose';
+import net from 'net';
 
 const DEFAULT_PORT = 3000;
 
@@ -19,21 +21,6 @@ const app = express();
 /**
  * Check if port is used on 5000
  */
-const server = app.listen(DEFAULT_PORT, () => {
-  console.log(`Server listening on port ${DEFAULT_PORT}`);
-});
-
-server.on('error', (error: NodeJS.ErrnoException) => {
-  if (error.code === 'EADDRINUSE') {
-    console.log(`Port ${DEFAULT_PORT} is already in use, trying another port...`);
-    const newPort = parseInt(process.env.PORT || '3000', 10) + 1;
-    server.listen(newPort, () => {
-      console.log(`Server listening on port ${newPort}`);
-    });
-  } else {
-    console.error(error);
-  }
-});
 
 const mongoUri = process.env.MONGO_URI;
 
@@ -49,8 +36,6 @@ interface MyConnectOptions extends ConnectOptions {
 mongoose.connect(process.env.MONGO_URI!, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
 } as MyConnectOptions).then(() => {
   console.log('MongoDB connected');
 }).catch((err) => {
@@ -59,13 +44,37 @@ mongoose.connect(process.env.MONGO_URI!, {
 
 app.use(express.json());
 
-app.use('/api/subforums', subforumRoutes);
+app.use('/api/subforums', subforumRoutes, subforumSubRoutes);
 app.use('/api/users', userRoutes);
 
-const PORT = process.env.PORT || 3000;
+const checkPort = (port: number, callback: (port: number) => void) => {
+  const server = net.createServer();
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+  server.once('error', (error: NodeJS.ErrnoException) => {
+    if (error.code === 'EADDRINUSE') {
+      console.log(`Port ${port} is already in use, trying another port...`);
+      checkPort(port + 1, callback);
+    } else {
+      console.error(error);
+    }
+  });
+
+  server.once('listening', () => {
+    server.close();
+    callback(port);
+  });
+
+  server.listen(port);
+};
+
+const startServer = (port: number) => {
+  app.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+};
+
+checkPort(Number(port), (availablePort) => {
+  startServer(availablePort);
 });
 
 export { app };

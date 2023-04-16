@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
 import { IUserService } from "@src/interfaces/User/IUserService";
-import CreateUpdateUserDto from "../../dto/User/CreateUpdateUserDto";
+import CreateUpdateUserDto from "@src/dto/User/CreateUpdateUserDto";
 
 export class UserController {
-  constructor(private readonly userService: IUserService) {}
+  constructor(private readonly userService: IUserService) {
+    console.log('userService:', userService);
+  }
 
-  async getAllUsers(req: Request, res: Response) {
+  getAllUsers = async (req: Request, res: Response) => {
     try {
       const users = await this.userService.getAllUsers();
       res.status(200).json(users);
@@ -13,9 +15,9 @@ export class UserController {
       console.error(error);
       res.status(500).send("Error retrieving users");
     }
-  }
+  };
 
-  async getUserById(req: Request, res: Response) {
+  getUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const user = await this.userService.getUserById(id);
@@ -27,20 +29,24 @@ export class UserController {
       console.error(error);
       res.status(500).send("Error retrieving user");
     }
-  }
+  };
 
-  async createUser(req: Request, res: Response) {
+  createUser = async (req: Request, res: Response) => {
     try {
       const createUserDto: CreateUpdateUserDto = req.body;
+      const existingUser = await this.userService.getUserByEmail(createUserDto.email);
+      if (existingUser) {
+        return res.status(400).send("Email already in use");
+      }
       const user = await this.userService.createUser(createUserDto);
       res.status(201).json(user);
     } catch (error) {
       console.error(error);
       res.status(500).send("Error creating user");
     }
-  }
+  };
 
-  async updateUserById(req: Request, res: Response) {
+  updateUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const update = req.body;
@@ -53,9 +59,9 @@ export class UserController {
       console.error(error);
       res.status(500).send("Error updating user");
     }
-  }
+  };
 
-  async deleteUserById(req: Request, res: Response) {
+  deleteUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const success = await this.userService.deleteUserById(id);
@@ -67,5 +73,5 @@ export class UserController {
       console.error(error);
       res.status(500).send("Error deleting user");
     }
-  }
+  };
 }

@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
 import { ISubforumService } from "@src/interfaces/Subforum/ISubforumService";
-import CreateSubforumDTO from "../../dto/Subforum/CreateSubforumDto";
+import CreateSubforumDTO from "@src/dto/Subforum/CreateSubforumDto";
 
 
 export class SubforumController {
   constructor(private readonly subforumService: ISubforumService) {}
 
 
-  async createSubforum(req: Request, res: Response) {
+  createSubforum = async(req: Request, res: Response) => {
     try {
       const { title, description, createdBy } = req.body;
       const subforumData: CreateSubforumDTO = { title, description, createdBy };
@@ -19,7 +19,7 @@ export class SubforumController {
     }
   }
 
-  async getSubforum(req: Request, res: Response) {
+  getSubforum = async(req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const subforum = await this.subforumService.getSubforumById(id);
@@ -34,7 +34,7 @@ export class SubforumController {
     }
   }
 
-  async getAllSubforums(req: Request, res: Response) {
+  getAllSubforums = async(req: Request, res: Response) => {
     try {
       const subforums = await this.subforumService.getAllSubforums();
       res.status(200).json(subforums);
@@ -44,11 +44,11 @@ export class SubforumController {
     }
   }
 
-  async updateSubforum(req: Request, res: Response) {
+  updateSubforum = async(req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { name, description } = req.body;
-      const subforum = await this.subforumService.updateSubforumById(id,{ name, description});
+      const { title, description } = req.body;
+      const subforum = await this.subforumService.updateSubforumById(id,{ title, description});
       if (subforum) {
         res.status(200).json(subforum);
       } else {
@@ -60,7 +60,7 @@ export class SubforumController {
     }
   }
 
-  async deleteSubforum(req: Request, res: Response) {
+  deleteSubforum = async(req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const subforum = await this.subforumService.deleteSubforumById(id);

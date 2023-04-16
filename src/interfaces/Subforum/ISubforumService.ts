@@ -1,5 +1,5 @@
 import { ISubforum } from "./ISubforum";
-import CreateSubforumDto from "../../dto/Subforum/CreateSubforumDto";
+import CreateSubforumDto from "@src/dto/Subforum/CreateSubforumDto";
 
 export interface ISubforumService {
   getAllSubforums(): Promise<ISubforum[]>;

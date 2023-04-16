@@ -1,4 +1,6 @@
+import { Document } from 'mongoose';
+
 export  interface ISubforum extends Document {
-    name: string;
+    title: string;
     description: string;
 }

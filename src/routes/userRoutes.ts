@@ -5,6 +5,7 @@ import { UserService } from '../services/User/UserService';
 export const userRoutes = express.Router();
 
 const userService = new UserService();
+console.log('userService:', userService); // Add this line
 const userController = new UserController(userService);
 
 userRoutes.get('/', userController.getAllUsers);

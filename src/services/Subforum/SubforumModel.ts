@@ -4,7 +4,7 @@ import { ISubforum } from '@src/interfaces/Subforum/ISubforum'
 
 const SubforumSchema = new mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
       required: true,
     },

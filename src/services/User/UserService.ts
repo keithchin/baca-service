@@ -1,14 +1,15 @@
 import { Model } from 'mongoose'
-import { IUser } from '@src/interfaces/User/IUser';
-import { IUserService } from '@src/interfaces/User/IUserService';
-import userModel from '../../models/UserModel';
-import CreateUpdateUserDto from "../../dto/User/CreateUpdateUserDto";
+import { IUser } from '../../interfaces/User/IUser';
+import { IUserService } from '../../interfaces/User/IUserService';
+import userModel from './UserModel';
+import CreateUpdateUserDto from "@src/dto/User/CreateUpdateUserDto";
 
 const UserModel: Model<IUser> = userModel;
 
 
 export class UserService implements IUserService {
     async getAllUsers(): Promise<IUser[]> {
+      console.log('hi');
       try {
         const users = await UserModel.find();
         return users;
@@ -49,6 +50,15 @@ export class UserService implements IUserService {
       try {
         const result = await UserModel.findByIdAndDelete(userId);
         return result !== null;
+      } catch (error) {
+        throw new Error((error as Error).message);
+      }
+    }
+
+    async getUserByEmail(email: string): Promise<IUser | null> {
+      try {
+        const user = await UserModel.findOne({ email });
+        return user;
       } catch (error) {
         throw new Error((error as Error).message);
       }

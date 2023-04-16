@@ -1,4 +1,4 @@
 export default interface updateSubforumDto {
-    name: string;
+    title: string;
     description: string;
 }

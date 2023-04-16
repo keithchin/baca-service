@@ -1,13 +1,14 @@
 import { Model } from 'mongoose'
 import { ISubforum } from '@src/interfaces/Subforum/ISubforum';
 import { ISubforumService } from '@src/interfaces/Subforum/ISubforumService';
-import subforumModel from '../../models/SubforumModel';
+import subforumModel from './SubforumModel';
 
 const SubforumModel: Model<ISubforum> = subforumModel;
-import CreateSubforumDto from "../../dto/Subforum/CreateSubforumDto";
-import UpdateSubforumDto from "../../dto/Subforum/UpdateSubforumDto";
+import CreateSubforumDto from "@src/dto/Subforum/CreateSubforumDto";
+import UpdateSubforumDto from "@src/dto/Subforum/UpdateSubforumDto";
 
 export class SubforumService implements ISubforumService {
+
   async getAllSubforums(): Promise<ISubforum[]> {
     try {
       const subforums = await SubforumModel.find({});

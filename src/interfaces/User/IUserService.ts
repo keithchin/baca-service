@@ -1,5 +1,5 @@
 import { IUser } from "./IUser";
-import CreateUpdateUserDto from "../../dto/User/CreateUpdateUserDto";
+import CreateUpdateUserDto from "@src/dto/User/CreateUpdateUserDto";
 
 export interface IUserService {
   getAllUsers(): Promise<IUser[]>;
@@ -7,4 +7,6 @@ export interface IUserService {
   createUser(createUpdateUserDto: CreateUpdateUserDto): Promise<IUser>;
   updateUserById(userId: string, update: Partial<IUser>): Promise<IUser | null>;
   deleteUserById(userId: string): Promise<boolean>;
+  getUserByEmail(email: string): Promise<IUser | null>;
+
 }
