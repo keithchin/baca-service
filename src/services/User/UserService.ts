@@ -8,7 +8,7 @@ const UserModel: Model<IUser> = userModel;
 
 
 export class UserService implements IUserService {
-    async getAllUsers(): Promise<IUser[]> {
+  public async getAllUsers(): Promise<IUser[]> {
       console.log('hi');
       try {
         const users = await UserModel.find();
@@ -17,17 +17,20 @@ export class UserService implements IUserService {
         throw new Error((error as Error).message);
       }
     }
-  
-    public async getUserByUsername(username: string): Promise<IUser | null> {
+
+    public async getUserByUsernameOrEmail(usernameOrEmail: string): Promise<IUser | null> {
       try {
-        const user = await UserModel.findOne({ username });
+        const user = await UserModel.findOne({
+          $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+        });
         return user;
       } catch (error) {
         throw new Error((error as Error).message);
       }
     }
+    
 
-    async getUserById(userId: ObjectId): Promise<IUser | null> {
+    public async getUserById(userId: ObjectId): Promise<IUser | null> {
       try {
         const user = await UserModel.findById(userId);
         return user;
@@ -36,7 +39,7 @@ export class UserService implements IUserService {
       }
     }
   
-    async createUser(createUserDto: CreateUpdateUserDto): Promise<IUser> {
+    public async createUser(createUserDto: CreateUpdateUserDto): Promise<IUser> {
         try {
           const user = new UserModel(createUserDto);
           await user.save();
@@ -46,7 +49,7 @@ export class UserService implements IUserService {
         }
       }
   
-    async updateUserById(userId: ObjectId, updateUserDto: CreateUpdateUserDto): Promise<IUser | null> {
+    public async updateUserById(userId: ObjectId, updateUserDto: CreateUpdateUserDto): Promise<IUser | null> {
       try {
         const user = await UserModel.findByIdAndUpdate(userId, updateUserDto, { new: true });
         return user;
@@ -55,7 +58,7 @@ export class UserService implements IUserService {
       }
     }
   
-    async deleteUserById(userId: ObjectId): Promise<boolean> {
+    public async deleteUserById(userId: ObjectId): Promise<boolean> {
       try {
         const result = await UserModel.findByIdAndDelete(userId);
         return result !== null;
@@ -64,10 +67,9 @@ export class UserService implements IUserService {
       }
     }
 
-    async getUserByEmail(email: string): Promise<IUser | null> {
+    public async removeAll(): Promise<void> {
       try {
-        const user = await UserModel.findOne({ email });
-        return user;
+        await UserModel.deleteMany({});
       } catch (error) {
         throw new Error((error as Error).message);
       }

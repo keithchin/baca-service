@@ -8,9 +8,10 @@ export interface IPostService {
   getPostById(postId: ObjectId): Promise<IPost | null>;
   createPost(createPostDto: CreatePostDto): Promise<IPost>;
   updatePostById(postId: ObjectId, update: UpdatePostDto): Promise<IPost | null>;
-  deletePostById(postId: ObjectId): Promise<boolean>;
+  deletePostById(postId: ObjectId): Promise<number>;
   upvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost>;
   downvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost>;
   getPostsBySubforum(subforumId: ObjectId): Promise<IPost[]>;
   getPostsByAuthor(authorId: ObjectId): Promise<IPost[]>;
+  removeAll(): Promise<void>;
 }

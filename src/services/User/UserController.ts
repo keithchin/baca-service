@@ -1,5 +1,7 @@
+import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
 import mongoose from "mongoose";
+import { IUser } from '@src/interfaces/User/IUser';
 import { IUserService } from "@src/interfaces/User/IUserService";
 import CreateUpdateUserDto from "@src/dto/User/CreateUpdateUserDto";
 
@@ -8,7 +10,7 @@ export class UserController {
     console.log('userService:', userService);
   }
 
-  getAllUsers = async (req: Request, res: Response) => {
+  public getAllUsers = async (req: Request, res: Response) => {
     try {
       const users = await this.userService.getAllUsers();
       res.status(200).json(users);
@@ -18,7 +20,7 @@ export class UserController {
     }
   };
 
-  getUserById = async (req: Request, res: Response) => {
+  public getUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const user = await this.userService.getUserById(new mongoose.Schema.Types.ObjectId(id));
@@ -32,22 +34,55 @@ export class UserController {
     }
   };
 
-  createUser = async (req: Request, res: Response) => {
+  public createUser = async (req: Request, res: Response) => {
     try {
       const createUserDto: CreateUpdateUserDto = req.body;
-      const existingUser = await this.userService.getUserByEmail(createUserDto.email);
-      if (existingUser) {
+      const existingUserByEmail = await this.userService.getUserByUsernameOrEmail(createUserDto.email);
+      if (existingUserByEmail) {
         return res.status(400).send("Email already in use");
       }
-      const user = await this.userService.createUser(createUserDto);
+      const existingUserByUsername = await this.userService.getUserByUsernameOrEmail(createUserDto.username);
+      if (existingUserByUsername) {
+        return res.status(400).send("Username already in use");
+      }
+  
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+  
+      const user = await this.userService.createUser({
+        ...createUserDto,
+        password: hashedPassword
+      });
+  
       res.status(201).json(user);
     } catch (error) {
       console.error(error);
       res.status(500).send("Error creating user");
     }
-  };
-
-  updateUserById = async (req: Request, res: Response) => {
+  };  
+  
+  public async authenticateUser(usernameOrEmail: string, password: string): Promise<IUser | null> {
+    // Retrieve the user's record from the database using their username/email
+    const user = await this.userService.getUserByUsernameOrEmail(usernameOrEmail);
+  
+    if (user) {
+      // Use bcrypt to compare the password entered by the user with the password hash stored in the database
+      const passwordMatch = await bcrypt.compare(password, user.password);
+  
+      if (passwordMatch) {
+        // Return the user's record, indicating that the authentication was successful
+        return user;
+      }
+    }
+  
+    // If the authentication failed, return null
+    return null;
+  }
+  
+  
+  
+  
+  public updateUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const update = req.body;
@@ -62,7 +97,7 @@ export class UserController {
     }
   };
 
-  deleteUserById = async (req: Request, res: Response) => {
+  public deleteUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const success = await this.userService.deleteUserById(new mongoose.Schema.Types.ObjectId(id));

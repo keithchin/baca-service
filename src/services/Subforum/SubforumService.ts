@@ -9,7 +9,7 @@ import UpdateSubforumDto from "@src/dto/Subforum/UpdateSubforumDto";
 
 export class SubforumService implements ISubforumService {
 
-  async getAllSubforums(): Promise<ISubforum[]> {
+  public async getAllSubforums(): Promise<ISubforum[]> {
     try {
       const subforums = await SubforumModel.find({});
       return subforums;
@@ -18,7 +18,7 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  async createSubforum(createSubforumDto: CreateSubforumDto): Promise<ISubforum> {
+  public async createSubforum(createSubforumDto: CreateSubforumDto): Promise<ISubforum> {
     try {
       const subforum = new SubforumModel(createSubforumDto);
       await subforum.save();
@@ -28,7 +28,7 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  async getSubforumById(id: ObjectId): Promise<ISubforum | null> {
+  public async getSubforumById(id: ObjectId): Promise<ISubforum | null> {
     try {
       const subforum = await SubforumModel.findById(id);
       return subforum;
@@ -37,7 +37,7 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  async updateSubforumById(
+  public async updateSubforumById(
     id: ObjectId,
     updateSubforumDto: UpdateSubforumDto
   ): Promise<ISubforum | null> {
@@ -52,10 +52,18 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  async deleteSubforumById(id: ObjectId): Promise<boolean> {
+  public async deleteSubforumById(id: ObjectId): Promise<boolean> {
     try {
       const result = await SubforumModel.deleteOne({ _id: id });
       return result.deletedCount === 1;
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  }
+  
+  public async removeAll(): Promise<void> {
+    try {
+      await SubforumModel.deleteMany({});
     } catch (error) {
       throw new Error((error as Error).message);
     }

@@ -7,8 +7,7 @@ export interface IUserService {
   getUserById(userId: ObjectId): Promise<IUser | null>;
   createUser(createUpdateUserDto: CreateUpdateUserDto): Promise<IUser>;
   updateUserById(userId: ObjectId, update: Partial<IUser>): Promise<IUser | null>;
-  getUserByUsername(username: string): Promise<IUser | null>; // Add this line
   deleteUserById(userId: ObjectId): Promise<boolean>;
-  getUserByEmail(email: string): Promise<IUser | null>;
-
+  getUserByUsernameOrEmail(usernameOrEmail: string): Promise<IUser | null>;
+  removeAll(): Promise<void>;
 }

@@ -8,4 +8,5 @@
     createSubforum(createSubforumDto: CreateSubforumDto): Promise<ISubforum>;
     updateSubforumById(subforumId: ObjectId, update: Partial<ISubforum>): Promise<ISubforum | null>;
     deleteSubforumById(subforumId: ObjectId): Promise<boolean>;
+    removeAll(): Promise<void>;
   }

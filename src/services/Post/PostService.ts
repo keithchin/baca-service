@@ -3,11 +3,11 @@ import { IPost } from '@src/interfaces/Post/IPost';
 import { IPostService } from '@src/interfaces/Post/IPostService';
 import { IUserService } from '@src/interfaces/User/IUserService';
 import { ISubforumService } from '@src/interfaces/Subforum/ISubforumService';
-import PostModel from './PostModel';
+import postModel from './PostModel';
 import CreatePostDto from '@src/dto/Post/CreatePostDto';
 import UpdatePostDto from '@src/dto/Post/UpdatePostDto';
 
-const Post: Model<IPost> = PostModel;
+const PostModel: Model<IPost> = postModel;
 
 export class PostService implements IPostService {
     constructor(
@@ -15,31 +15,31 @@ export class PostService implements IPostService {
         private readonly subforumService: ISubforumService
     ) {}
     
-  async getAllPosts(): Promise<IPost[]> {
-    return await Post.find({});
+  public async getAllPosts(): Promise<IPost[]> {
+    return await PostModel.find({});
   }
 
-  async getPostById(postId: ObjectId): Promise<IPost | null> {
-    return await Post.findById(postId);
+  public async getPostById(postId: ObjectId): Promise<IPost | null> {
+    return await PostModel.findById(postId);
   }
 
-  async createPost(createPostDto: CreatePostDto): Promise<IPost> {
-    const post = new Post(createPostDto);
+  public async createPost(createPostDto: CreatePostDto): Promise<IPost> {
+    const post = new PostModel(createPostDto);
     await post.save();
     return post;
   }
 
-  async updatePostById(postId: ObjectId, update: UpdatePostDto): Promise<IPost | null> {
-    return await Post.findByIdAndUpdate(postId, update, { new: true });
+  public async updatePostById(postId: ObjectId, update: UpdatePostDto): Promise<IPost | null> {
+    return await PostModel.findByIdAndUpdate(postId, update, { new: true });
   }
 
-  async deletePostById(postId: ObjectId): Promise<boolean> {
-    const result = await Post.deleteOne({ _id: postId });
-    return result.deletedCount === 1;
+  public async deletePostById(postId: ObjectId): Promise<number> {
+    const result = await PostModel.deleteOne({ _id: postId });
+    return result.deletedCount ?? 0;
   }
   
-  async upvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost> {
-    const post = await Post.findById(postId);
+  public async upvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost> {
+    const post = await PostModel.findById(postId);
   
     if (!post) {
       throw new Error('Post not found');
@@ -54,8 +54,8 @@ export class PostService implements IPostService {
     return post;
   }
   
-  async downvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost> {
-    const post = await Post.findById(postId);
+  public async downvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost> {
+    const post = await PostModel.findById(postId);
   
     if (!post) {
       throw new Error('Post not found');
@@ -70,11 +70,19 @@ export class PostService implements IPostService {
     return post;
   }
   
-  async getPostsBySubforum(subforumId: ObjectId): Promise<IPost[]> {
-    return await Post.find({ subforum: subforumId });
+  public async getPostsBySubforum(subforumId: ObjectId): Promise<IPost[]> {
+    return await PostModel.find({ subforum: subforumId });
   }
 
-  async getPostsByAuthor(authorId: ObjectId): Promise<IPost[]> {
-    return await Post.find({ author: authorId });
+  public async getPostsByAuthor(authorId: ObjectId): Promise<IPost[]> {
+    return await PostModel.find({ author: authorId });
+  }
+
+  public async removeAll(): Promise<void> {
+    try {
+      await PostModel.deleteMany({});
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 }
