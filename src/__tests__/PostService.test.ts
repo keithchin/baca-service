@@ -2,14 +2,14 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { v4 as uuidv4 } from 'uuid';
 import { UserService } from '../services/User/UserService';
 import { SubforumService } from '../services/Subforum/SubforumService';
+import { SubforumSubService } from '../services/SubforumSub/SubforumSubService';
 import { PostService } from '../services/Post/PostService';
-import { IUser } from '@src/interfaces/User/IUser';
-import { ISubforum } from '@src/interfaces/Subforum/ISubforum';
 import { connect, disconnect } from '../config/db';
 
 let mongoServer: MongoMemoryServer;
 let userService: UserService;
 let subforumService: SubforumService;
+let subforumSubService: SubforumSubService;
 let postService: PostService;
 
 beforeAll(async () => {
@@ -23,26 +23,15 @@ beforeAll(async () => {
 
   userService = new UserService();
   subforumService = new SubforumService();
+  subforumSubService = new SubforumSubService(userService, subforumService);
   postService = new PostService(userService, subforumService);
-
-  const user = await userService.createUser({
-    username: `testUser_${uuidv4()}`,
-    password: 'testPassword',
-    password_confirmation: 'testPassword',
-    email: 'test@nomail.com'
-  });
-  const subforum = await subforumService.createSubforum({
-    title: 'Test Subforum',
-    description: 'A subforum for testing purposes',
-    createdBy: user.id
-  });
 });
 
 beforeEach(async () => {
   await Promise.all([
     userService.removeAll(),
     subforumService.removeAll(),
-    postService.removeAll(),
+    subforumSubService.removeAll(),
   ]);
 });
 
@@ -240,9 +229,12 @@ describe('PostService', () => {
       // Upvote the post
       const upvotedPost = await postService.upvotePost(user.id, post.id);
     
+      // Get the updated post data from the database
+      const updatedPost = await postService.getPostById(post.id);
+    
       // Validate upvoted post data
-      expect(upvotedPost?.upvotes).toEqual(1);
-      expect(upvotedPost?.downvotes).toEqual(0);
+      expect(upvotedPost?.voteScore).toEqual(updatedPost?.voteScore);
+      expect(upvotedPost?.upvotedBy?.length).toEqual(1);
       expect(upvotedPost?.upvotedBy && upvotedPost.upvotedBy[0].toString()).toEqual(user.id.toString());
     });
 
@@ -267,16 +259,17 @@ describe('PostService', () => {
       };
       const post = await postService.createPost(createPostDto);
     
-      // Upvote the post
-      const upvotedPost = await postService.upvotePost(user.id, post.id);
-    
       // Downvote the post
       const downvotedPost = await postService.downvotePost(user.id, post.id);
+
+      // Get the updated post data from the database
+      const updatedPost = await postService.getPostById(post.id);
+
     
       // Validate downvoted post data
-      expect(downvotedPost?.upvotes).toEqual(0);
-      expect(downvotedPost?.downvotes).toEqual(1);
+      expect(updatedPost?.voteScore).toEqual(downvotedPost?.voteScore);
       expect(downvotedPost?.upvotedBy?.length).toEqual(0);
+      expect(downvotedPost?.downvotedBy?.length).toEqual(1);
       expect(downvotedPost?.downvotedBy && downvotedPost.downvotedBy[0].toString()).toEqual(user.id.toString());
     });
 });

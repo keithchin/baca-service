@@ -6,15 +6,20 @@ import { SubforumService } from '../services/Subforum/SubforumService';
 import { SubforumSubService } from '../services/SubforumSub/SubforumSubService';
 import { ISubforum } from '@src/interfaces/Subforum/ISubforum';
 import { ISubforumSub } from '@src/interfaces/SubforumSubs/ISubforumSub';
+import { ISubforumSubService } from '@src/interfaces/SubforumSubs/ISubforumSubService';
 import { IUser } from '@src/interfaces/User/IUser';
 import { IUserService } from '@src/interfaces/User/IUserService';
 import { ISubforumService } from '@src/interfaces/Subforum/ISubforumService';
-import { ObjectId } from 'mongoose';
 
 let mongoServer: MongoMemoryServer;
 let userService: IUserService;
 let subforumService: ISubforumService;
-let subforumSubService: SubforumSubService;
+
+
+let subforumSubService: ISubforumSubService;
+let user: IUser;
+let subforum: ISubforum;
+let subscription: ISubforumSub;
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create({
@@ -28,18 +33,6 @@ beforeAll(async () => {
   userService = new UserService();
   subforumService = new SubforumService();
   subforumSubService = new SubforumSubService(userService, subforumService);
-
-  const user = await userService.createUser({
-    username: `testUser_${uuidv4()}`,
-    password: 'testPassword',
-    password_confirmation: 'testPassword',
-    email: 'test@nomail.com'
-  });
-  const subforum = await subforumService.createSubforum({
-    title: 'Test Subforum',
-    description: 'A subforum for testing purposes',
-    createdBy: user.id
-  });
 });
 
 beforeEach(async () => {
@@ -48,6 +41,18 @@ beforeEach(async () => {
     subforumService.removeAll(),
     subforumSubService.removeAll(),
   ]);
+
+  user = await userService.createUser({
+    username: `testUser_${uuidv4()}`,
+    password: 'testPassword',
+    password_confirmation: 'testPassword',
+    email: 'test@nomail.com'
+  });
+  subforum = await subforumService.createSubforum({
+    title: 'Test Subforum',
+    description: 'A subforum for testing purposes',
+    createdBy: user.id
+  });
 });
 
 afterAll(async () => {
@@ -56,10 +61,6 @@ afterAll(async () => {
 });
 
 describe('SubforumSubService', () => {
-    let subforumSubService: SubforumSubService;
-    let user: IUser;
-    let subforum: ISubforum;
-    let subscription: ISubforumSub;
   
 
   

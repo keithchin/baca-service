@@ -4,7 +4,6 @@ import { ISubforumSubService } from '@src/interfaces/SubforumSubs/ISubforumSubSe
 import { IUserService } from '@src/interfaces/User/IUserService';
 import { ISubforumService } from '@src/interfaces/Subforum/ISubforumService';
 import subforumSubModel from './SubforumSubModel';
-import CreateSubforumSubDto from "@src/dto/SubforumSub/CreateSubforumSubDto";
 
 const SubforumSubModel: Model<ISubforumSub> = subforumSubModel;
 

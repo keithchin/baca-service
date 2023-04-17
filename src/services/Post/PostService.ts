@@ -25,7 +25,9 @@ export class PostService implements IPostService {
 
   public async createPost(createPostDto: CreatePostDto): Promise<IPost> {
     const post = new PostModel(createPostDto);
-    post.voteScore = 0; 
+    post.voteScore = 0;
+    post.upvotedBy = []; // Initialize upvotedBy as an empty array
+    post.downvotedBy = []; // Initialize downvotedBy as an empty array
     await post.save();
     return post;
   }
