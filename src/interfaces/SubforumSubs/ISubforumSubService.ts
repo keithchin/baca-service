@@ -7,4 +7,5 @@ export interface ISubforumSubService {
   unsubscribeFromSubforum(userId: ObjectId, subforumId: ObjectId): Promise<boolean>;
   getSubscribedSubforums(userId: ObjectId): Promise<ISubforumSub[]>;
   getSubscribers(subforumId: ObjectId): Promise<ISubforumSub[]>;
+  removeAll(): Promise<void>;
 }

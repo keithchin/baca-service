@@ -9,4 +9,7 @@ export  interface IPost extends Document {
     downvotes: ObjectId[];
     created_at: Date;
     updated_at: Date;
+    upvotedBy?: ObjectId[];
+    downvotedBy?: ObjectId[];
+    voteScore: number; 
 }

@@ -25,6 +25,7 @@ export class PostService implements IPostService {
 
   public async createPost(createPostDto: CreatePostDto): Promise<IPost> {
     const post = new PostModel(createPostDto);
+    post.voteScore = 0; 
     await post.save();
     return post;
   }
@@ -38,37 +39,118 @@ export class PostService implements IPostService {
     return result.deletedCount ?? 0;
   }
   
-  public async upvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost> {
-    const post = await PostModel.findById(postId);
+  public async upvotePost(userId: ObjectId, postId: ObjectId): Promise<IPost> {
+    const user = await this.userService.getUserById(userId);
+    const post = await this.getPostById(postId);
+  
+    if (!user) {
+      throw new Error('User not found');
+    }
   
     if (!post) {
       throw new Error('Post not found');
     }
   
-    const userAlreadyUpvoted = post.upvotes.some(upvote => upvote === userId);
-    if (!userAlreadyUpvoted) {
-      post.upvotes.push(userId);
-      await post.save();
+    const existingUpvote = await PostModel.findOne({
+      _id: post._id,
+      upvotedBy: userId,
+    });
+  
+    if (existingUpvote) {
+      throw new Error('User has already upvoted this post.');
     }
   
-    return post;
-  }
+    const existingDownvote = await PostModel.findOne({
+      _id: post._id,
+      downvotedBy: userId,
+    });
   
-  public async downvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost> {
-    const post = await PostModel.findById(postId);
+    if (existingDownvote) {
+      await PostModel.updateOne(
+        { _id: post._id },
+        {
+          $pull: { downvotedBy: userId },
+          $push: { upvotedBy: userId },
+          $inc: { voteScore: 2 },
+        }
+      );
+    } else {
+      await PostModel.updateOne(
+        { _id: post._id },
+        {
+          $push: { upvotedBy: userId },
+          $inc: { voteScore: 1 },
+        }
+      );
+    }
+  
+    const upvotedPost = await this.getPostById(postId);
+    if (!upvotedPost) {
+      throw new Error('Post not found');
+    }
+  
+    if (post.authorId.toString() === userId.toString()) {
+      throw new Error('Cannot upvote own post.');
+    }
+  
+    return upvotedPost;
+  }
+    
+
+  public async downvotePost(userId: ObjectId, postId: ObjectId): Promise<IPost> {
+    const user = await this.userService.getUserById(userId);
+    const post = await this.getPostById(postId);
+  
+    if (!user) {
+      throw new Error('User not found');
+    }
   
     if (!post) {
       throw new Error('Post not found');
     }
   
-    const userAlreadyDownvoted = post.downvotes.some(downvote => downvote === userId);
-    if (!userAlreadyDownvoted) {
-      post.downvotes.push(userId);
-      await post.save();
+    const existingDownvote = await PostModel.findOne({
+      _id: post._id,
+      downvotedBy: userId.toString(),
+    });
+  
+    if (existingDownvote) {
+      throw new Error('User has already downvoted this post.');
     }
   
-    return post;
+    const existingUpvote = await PostModel.findOne({
+      _id: post._id,
+      upvotedBy: userId.toString(),
+    });
+  
+    if (existingUpvote) {
+      await PostModel.updateOne(
+        { _id: post._id },
+        {
+          $pull: { upvotedBy: userId.toString() },
+          $push: { downvotedBy: userId.toString() },
+          $inc: { voteScore: -2 },
+        }
+      );
+    } else {
+      await PostModel.updateOne(
+        { _id: post._id },
+        {
+          $push: { downvotedBy: userId.toString() },
+          $inc: { voteScore: -1 },
+        }
+      );
+    }
+  
+    const downvotedPost = await this.getPostById(postId);
+    if (!downvotedPost) {
+      throw new Error('Post not found');
+    }
+  
+    return downvotedPost;
   }
+  
+
   
   public async getPostsBySubforum(subforumId: ObjectId): Promise<IPost[]> {
     return await PostModel.find({ subforum: subforumId });

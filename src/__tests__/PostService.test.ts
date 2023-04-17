@@ -215,5 +215,69 @@ describe('PostService', () => {
       // Validate delete result
       expect(deleteResult).toBeGreaterThan(0);
     });
+
+    test('should upvote a post successfully', async () => {
+      // Create a post and user
+      const user = await userService.createUser({
+        username: `testUser_${uuidv4()}`,
+        password: 'testPassword',
+        password_confirmation: 'testPassword',
+        email: `test_${uuidv4()}@nomail.com`
+      });
+      const subforum = await subforumService.createSubforum({
+        title: 'Test Subforum',
+        description: 'A subforum for testing purposes',
+        createdBy: user.id
+      });
+      const createPostDto = {
+        title: 'Test Post',
+        content: 'This is a test post',
+        authorId: user.id,
+        subforumId: subforum.id,
+      };
+      const post = await postService.createPost(createPostDto);
+    
+      // Upvote the post
+      const upvotedPost = await postService.upvotePost(user.id, post.id);
+    
+      // Validate upvoted post data
+      expect(upvotedPost?.upvotes).toEqual(1);
+      expect(upvotedPost?.downvotes).toEqual(0);
+      expect(upvotedPost?.upvotedBy && upvotedPost.upvotedBy[0].toString()).toEqual(user.id.toString());
+    });
+
+    test('should downvote a post successfully', async () => {
+      // Create a post and user
+      const user = await userService.createUser({
+        username: `testUser_${uuidv4()}`,
+        password: 'testPassword',
+        password_confirmation: 'testPassword',
+        email: `test_${uuidv4()}@nomail.com`
+      });
+      const subforum = await subforumService.createSubforum({
+        title: 'Test Subforum',
+        description: 'A subforum for testing purposes',
+        createdBy: user.id
+      });
+      const createPostDto = {
+        title: 'Test Post',
+        content: 'This is a test post',
+        authorId: user.id,
+        subforumId: subforum.id,
+      };
+      const post = await postService.createPost(createPostDto);
+    
+      // Upvote the post
+      const upvotedPost = await postService.upvotePost(user.id, post.id);
+    
+      // Downvote the post
+      const downvotedPost = await postService.downvotePost(user.id, post.id);
+    
+      // Validate downvoted post data
+      expect(downvotedPost?.upvotes).toEqual(0);
+      expect(downvotedPost?.downvotes).toEqual(1);
+      expect(downvotedPost?.upvotedBy?.length).toEqual(0);
+      expect(downvotedPost?.downvotedBy && downvotedPost.downvotedBy[0].toString()).toEqual(user.id.toString());
+    });
 });
   

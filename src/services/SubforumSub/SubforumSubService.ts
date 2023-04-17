@@ -15,7 +15,7 @@ export class SubforumSubService implements ISubforumSubService {
     ) {}
     
 
-  async subscribeToSubforum(
+  public async subscribeToSubforum(
     userId: ObjectId,
     subforumId: ObjectId
   ): Promise<ISubforumSub> {
@@ -47,7 +47,8 @@ export class SubforumSubService implements ISubforumSubService {
     await subscription.save();
     return subscription;
   }
-  async unsubscribeFromSubforum(
+
+  public async unsubscribeFromSubforum(
     userId: ObjectId,
     subforumId: ObjectId
   ): Promise<boolean> {
@@ -62,14 +63,23 @@ export class SubforumSubService implements ISubforumSubService {
   
     const result = await SubforumSubModel.deleteOne({ userId, subforumId });
     return result.deletedCount === 1;
-  }
-  async getSubscribedSubforums(userId: ObjectId): Promise<ISubforumSub[]> {
+  } 
+  
+  public async getSubscribedSubforums(userId: ObjectId): Promise<ISubforumSub[]> {
     const subscriptions = await SubforumSubModel.find({ userId });
     return subscriptions;
   }
 
-  async getSubscribers(subforumId: ObjectId): Promise<ISubforumSub[]> {
+  public async getSubscribers(subforumId: ObjectId): Promise<ISubforumSub[]> {
     const subscribers = await SubforumSubModel.find({ subforumId });
     return subscribers;
+  }
+
+  public async removeAll(): Promise<void> {
+    try {
+      await SubforumSubModel.deleteMany({});
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
   }
 }
