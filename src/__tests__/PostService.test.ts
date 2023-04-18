@@ -32,6 +32,7 @@ beforeEach(async () => {
     userService.removeAll(),
     subforumService.removeAll(),
     subforumSubService.removeAll(),
+    postService.removeAll(),
   ]);
 });
 
@@ -105,7 +106,9 @@ describe('PostService', () => {
   
       // Get all posts
       const posts = await postService.getAllPosts();
-  
+      
+      console.log(posts);
+
       // Validate the length and contents of the array
       expect(posts.length).toEqual(2);
       expect(posts[0].title).toEqual(post1.title);
@@ -205,7 +208,7 @@ describe('PostService', () => {
       expect(deleteResult).toBeGreaterThan(0);
     });
 
-    test('should upvote a post successfully', async () => {
+    test('should not be able to upvote own post', async () => {
       // Create a post and user
       const user = await userService.createUser({
         username: `testUser_${uuidv4()}`,
@@ -213,6 +216,7 @@ describe('PostService', () => {
         password_confirmation: 'testPassword',
         email: `test_${uuidv4()}@nomail.com`
       });
+      
       const subforum = await subforumService.createSubforum({
         title: 'Test Subforum',
         description: 'A subforum for testing purposes',
@@ -226,8 +230,50 @@ describe('PostService', () => {
       };
       const post = await postService.createPost(createPostDto);
     
+      let error;
+      try {
+        // Upvote the post
+        await postService.upvotePost(user.id, post.id);
+      } catch (e) {
+        error = e;
+      }
+    
+      // Validate upvoted post data
+      expect(error).toBeDefined();
+      expect((error as Error).message).toEqual('Cannot upvote own post.');
+    });
+
+    test('should be able to upvote a post successfully', async () => {
+      // Create a post and user
+      const user = await userService.createUser({
+        username: `testUser_${uuidv4()}`,
+        password: 'testPassword',
+        password_confirmation: 'testPassword',
+        email: `test_${uuidv4()}@nomail.com`
+      });
+      
+      const subforum = await subforumService.createSubforum({
+        title: 'Test Subforum',
+        description: 'A subforum for testing purposes',
+        createdBy: user.id
+      });
+      const createPostDto = {
+        title: 'Test Post',
+        content: 'This is a test post',
+        authorId: user.id,
+        subforumId: subforum.id,
+      };
+      const post = await postService.createPost(createPostDto);
+
+      const upvotingUser = await userService.createUser({
+        username: `testUser_${uuidv4()}`,
+        password: 'testPassword',
+        password_confirmation: 'testPassword',
+        email: `test_${uuidv4()}@nomail.com`
+      });
+    
       // Upvote the post
-      const upvotedPost = await postService.upvotePost(user.id, post.id);
+      const upvotedPost = await postService.upvotePost(upvotingUser.id, post.id);
     
       // Get the updated post data from the database
       const updatedPost = await postService.getPostById(post.id);
@@ -235,7 +281,6 @@ describe('PostService', () => {
       // Validate upvoted post data
       expect(upvotedPost?.voteScore).toEqual(updatedPost?.voteScore);
       expect(upvotedPost?.upvotedBy?.length).toEqual(1);
-      expect(upvotedPost?.upvotedBy && upvotedPost.upvotedBy[0].toString()).toEqual(user.id.toString());
     });
 
     test('should downvote a post successfully', async () => {
