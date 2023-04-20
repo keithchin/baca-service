@@ -1,6 +1,8 @@
+import { ObjectId } from 'mongoose';
+
 export default interface CreatePostDto {
     title: string;
     content: string;
-    authorId: string;
-    subforumId: string;
+    authorId: ObjectId;
+    subforumId: ObjectId;
   }

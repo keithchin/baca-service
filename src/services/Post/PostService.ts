@@ -24,11 +24,20 @@ export class PostService implements IPostService {
   }
 
   public async createPost(createPostDto: CreatePostDto): Promise<IPost> {
+    console.log(createPostDto.authorId);
+    const user = await this.userService.getUserById(createPostDto.authorId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+  
+
     const post = new PostModel(createPostDto);
     post.voteScore = 0;
     post.upvotedBy = []; // Initialize upvotedBy as an empty array
     post.downvotedBy = []; // Initialize downvotedBy as an empty array
     await post.save();
+
     return post;
   }
 
