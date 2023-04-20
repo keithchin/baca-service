@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose from "mongoose";
+import mongoose,  { ObjectId } from "mongoose";
 import { ISubforumSubService } from "@src/interfaces/SubforumSubs/ISubforumSubService";
 import { IUserService } from '@src/interfaces/User/IUserService';
 import { ISubforumService } from '@src/interfaces/Subforum/ISubforumService';
@@ -17,7 +17,9 @@ export class SubforumSubController {
   subscribeToSubforum = async (req: Request, res: Response) => {
     try {
       const { userId, subforumId } = req.body;
-      const subscription = await this.subforumSubService.subscribeToSubforum(new mongoose.Schema.Types.ObjectId(userId), new mongoose.Schema.Types.ObjectId(subforumId));
+      console.log('User ID: ' + userId);
+      console.log('Subforum ID: ' + subforumId);
+      const subscription = await this.subforumSubService.subscribeToSubforum(userId, subforumId);
       res.status(201).json(subscription);
     } catch (error) {
       console.error(error);
@@ -38,7 +40,7 @@ export class SubforumSubController {
   unsubscribeFromSubforum = async (req: Request, res: Response) => {
     try {
       const { userId, subforumId } = req.body;
-      const subscription = await this.subforumSubService.unsubscribeFromSubforum(new mongoose.Schema.Types.ObjectId(userId), new mongoose.Schema.Types.ObjectId(subforumId));
+      const subscription = await this.subforumSubService.unsubscribeFromSubforum(userId, subforumId);
       res.status(200).json(subscription);
     } catch (error) {
       console.error(error);
@@ -54,10 +56,19 @@ export class SubforumSubController {
     }
   };
 
+  isValidObjectId = (value: string): boolean => {
+    return /^[a-f\d]{24}$/i.test(value);
+  }
+
   getSubscribedSubforums = async (req: Request, res: Response) => {
     try {
       const { userId } = req.params;
-      const subscriptions = await this.subforumSubService.getSubscribedSubforums(new mongoose.Schema.Types.ObjectId(userId));
+      console.log("User ID:", userId);
+
+      if (!this.isValidObjectId(userId)) {
+        return res.status(400).send("Invalid user ID");
+      }
+      const subscriptions = await this.subforumSubService.getSubscribedSubforums(userId);
       res.status(200).json(subscriptions);
     } catch (error) {
       console.error(error);

@@ -7,6 +7,9 @@ export class PostController {
 
   public createPost = async (req: Request, res: Response) => {
     try {
+      const { authorId, subforumId } = req.body;
+      console.log('Author ID : ' + authorId);
+      console.log('Subforum ID : ' + subforumId);
       const post = await this.postService.createPost(req.body);
       res.status(201).json(post);
     } catch (error) {

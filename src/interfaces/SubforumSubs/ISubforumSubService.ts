@@ -5,7 +5,7 @@ import CreateSubforumSubDto from "@src/dto/SubforumSub/CreateSubforumSubDto";
 export interface ISubforumSubService {
   subscribeToSubforum(userId: ObjectId, subforumId: ObjectId): Promise<ISubforumSub>;
   unsubscribeFromSubforum(userId: ObjectId, subforumId: ObjectId): Promise<boolean>;
-  getSubscribedSubforums(userId: ObjectId): Promise<ISubforumSub[]>;
+  getSubscribedSubforums(userId: String): Promise<ISubforumSub[]>;
   getSubscribers(subforumId: ObjectId): Promise<ISubforumSub[]>;
   removeAll(): Promise<void>;
 }

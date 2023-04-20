@@ -64,7 +64,7 @@ export class SubforumSubService implements ISubforumSubService {
     return result.deletedCount === 1;
   } 
   
-  public async getSubscribedSubforums(userId: ObjectId): Promise<ISubforumSub[]> {
+  public async getSubscribedSubforums(userId: String): Promise<ISubforumSub[]> {
     const subscriptions = await SubforumSubModel.find({ userId });
     return subscriptions;
   }
