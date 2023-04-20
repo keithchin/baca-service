@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { subforumRoutes } from './routes/subforumRoutes';
 import { userRoutes } from './routes/userRoutes';
 import { subforumSubRoutes } from './routes/subforumSubRoutes';
+import { postRoutes } from './routes/postRoutes';
 import { ConnectOptions } from 'mongoose';
 import net from 'net';
 
@@ -46,6 +47,7 @@ app.use(express.json());
 
 app.use('/api/subforums', subforumRoutes, subforumSubRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
 
 const checkPort = (port: number, callback: (port: number) => void) => {
   const server = net.createServer();
