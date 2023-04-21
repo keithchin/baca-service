@@ -1,10 +1,10 @@
-import { Document, ObjectId } from 'mongoose';
+import { Document, ObjectId, Types } from 'mongoose';
 
 export  interface IPost extends Document {
     title: string;
     content: string;  
-    authorId: ObjectId;
-    subforumId: ObjectId;
+    author: Types.ObjectId;
+    subforumId: Types.ObjectId;
     upvotes: ObjectId[];
     downvotes: ObjectId[];
     created_at: Date;

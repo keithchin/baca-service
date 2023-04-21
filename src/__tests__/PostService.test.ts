@@ -61,7 +61,9 @@ describe('PostService', () => {
     const createPostDto = {
       title: 'Test Post',
       content: 'This is a test post',
-      authorId: user.id,
+      author: {
+        _id: user.id
+      },
       subforumId: subforum.id
     };
     const post = await postService.createPost(createPostDto);
@@ -69,7 +71,7 @@ describe('PostService', () => {
       // Validate post data
       expect(post.title).toEqual(createPostDto.title);
       expect(post.content).toEqual(createPostDto.content);
-      expect(post.authorId.toString()).toEqual(createPostDto.authorId);
+      expect(post.author._id.toString()).toEqual(createPostDto.author._id);
       expect(post.subforumId.toString()).toEqual(createPostDto.subforumId);
     });
   
@@ -91,7 +93,9 @@ describe('PostService', () => {
       const createPostDto1 = {
         title: 'Test Post 1',
         content: 'This is test post 1',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post1 = await postService.createPost(createPostDto1);
@@ -99,7 +103,9 @@ describe('PostService', () => {
       const createPostDto2 = {
         title: 'Test Post 2',
         content: 'This is test post 2',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post2 = await postService.createPost(createPostDto2);
@@ -132,7 +138,9 @@ describe('PostService', () => {
       const createPostDto = {
         title: 'Test Post',
         content: 'This is a test post',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post = await postService.createPost(createPostDto);
@@ -143,7 +151,7 @@ describe('PostService', () => {
       // Validate post data
       expect(foundPost?.title).toEqual(post.title);
       expect(foundPost?.content).toEqual(post.content);
-      expect(foundPost?.authorId.toString()).toEqual(post.authorId.toString());
+      expect(foundPost?.author._id.toString()).toEqual(post.author._id.toString());
       expect(foundPost?.subforumId.toString()).toEqual(post.subforumId.toString());
     });
 
@@ -163,7 +171,9 @@ describe('PostService', () => {
       const createPostDto = {
         title: 'Test Post',
         content: 'This is a test post',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post = await postService.createPost(createPostDto);
@@ -196,7 +206,9 @@ describe('PostService', () => {
       const createPostDto = {
         title: 'Test Post',
         content: 'This is a test post',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post = await postService.createPost(createPostDto);
@@ -225,7 +237,9 @@ describe('PostService', () => {
       const createPostDto = {
         title: 'Test Post',
         content: 'This is a test post',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post = await postService.createPost(createPostDto);
@@ -260,7 +274,9 @@ describe('PostService', () => {
       const createPostDto = {
         title: 'Test Post',
         content: 'This is a test post',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post = await postService.createPost(createPostDto);
@@ -299,7 +315,9 @@ describe('PostService', () => {
       const createPostDto = {
         title: 'Test Post',
         content: 'This is a test post',
-        authorId: user.id,
+        author: {
+          _id: user.id
+        },
         subforumId: subforum.id,
       };
       const post = await postService.createPost(createPostDto);

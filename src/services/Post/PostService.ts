@@ -16,7 +16,9 @@ export class PostService implements IPostService {
     ) {}
     
   public async getAllPosts(): Promise<IPost[]> {
-    return await PostModel.find({});
+    return await PostModel.find({})
+    .populate('author')
+    .populate('subforumId');
   }
 
   public async getPostById(postId: String): Promise<IPost | null> {
@@ -24,8 +26,8 @@ export class PostService implements IPostService {
   }
 
   public async createPost(createPostDto: CreatePostDto): Promise<IPost> {
-    console.log(createPostDto.authorId);
-    const user = await this.userService.getUserById(createPostDto.authorId);
+    console.log(createPostDto.author._id);
+    const user = await this.userService.getUserById(createPostDto.author._id);
 
     if (!user) {
       throw new Error('User not found');
@@ -62,7 +64,7 @@ export class PostService implements IPostService {
       throw new Error('Post not found');
     }
   
-    if (post.authorId.toString() === userId.toString()) {
+    if (post.author._id.toString() === userId.toString()) {
       throw new Error('Cannot upvote own post.');
     }
   
