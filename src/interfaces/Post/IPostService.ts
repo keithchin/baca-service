@@ -5,13 +5,13 @@ import UpdatePostDto from "@src/dto/Post/UpdatePostDto";
 
 export interface IPostService {
   getAllPosts(): Promise<IPost[]>;
-  getPostById(postId: ObjectId): Promise<IPost | null>;
+  getPostById(postId: String): Promise<IPost | null>;
   createPost(createPostDto: CreatePostDto): Promise<IPost>;
-  updatePostById(postId: ObjectId, update: UpdatePostDto): Promise<IPost | null>;
-  deletePostById(postId: ObjectId): Promise<number>;
-  upvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost>;
-  downvotePost(postId: ObjectId, userId: ObjectId): Promise<IPost>;
-  getPostsBySubforum(subforumId: ObjectId): Promise<IPost[]>;
-  getPostsByAuthor(authorId: ObjectId): Promise<IPost[]>;
+  updatePostById(postId: String, update: UpdatePostDto): Promise<IPost | null>;
+  deletePostById(postId: String): Promise<number>;
+  upvotePost(postId: String, userId: string): Promise<IPost>;
+  downvotePost(postId: String, userId: string): Promise<IPost>;
+  getPostsBySubforum(subforumId: String): Promise<IPost[]>;
+  getPostsByAuthor(authorId: String): Promise<IPost[]>;
   removeAll(): Promise<void>;
 }

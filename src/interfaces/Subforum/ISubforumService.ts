@@ -4,9 +4,9 @@
 
   export interface ISubforumService {
     getAllSubforums(): Promise<ISubforum[]>;
-    getSubforumById(subforumId: ObjectId): Promise<ISubforum | null>;
+    getSubforumById(subforumId: String): Promise<ISubforum | null>;
     createSubforum(createSubforumDto: CreateSubforumDto): Promise<ISubforum>;
-    updateSubforumById(subforumId: ObjectId, update: Partial<ISubforum>): Promise<ISubforum | null>;
-    deleteSubforumById(subforumId: ObjectId): Promise<boolean>;
+    updateSubforumById(subforumId: String, update: Partial<ISubforum>): Promise<ISubforum | null>;
+    deleteSubforumById(subforumId: String): Promise<boolean>;
     removeAll(): Promise<void>;
   }

@@ -23,7 +23,7 @@ export class UserController {
   public getUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const user = await this.userService.getUserById(new mongoose.Schema.Types.ObjectId(id));
+      const user = await this.userService.getUserById(id);
       if (!user) {
         return res.status(404).send("User not found");
       }
@@ -86,7 +86,7 @@ export class UserController {
     try {
       const { id } = req.params;
       const update = req.body;
-      const updatedUser = await this.userService.updateUserById(new mongoose.Schema.Types.ObjectId(id), update);
+      const updatedUser = await this.userService.updateUserById(id, update);
       if (!updatedUser) {
         return res.status(404).send("User not found");
       }
@@ -100,7 +100,7 @@ export class UserController {
   public deleteUserById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const success = await this.userService.deleteUserById(new mongoose.Schema.Types.ObjectId(id));
+      const success = await this.userService.deleteUserById(id);
       if (!success) {
         return res.status(404).send("User not found");
       }

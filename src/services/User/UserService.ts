@@ -22,7 +22,7 @@ export class UserService implements IUserService {
     return await bcrypt.compare(password, hashedPassword);
   }
 
-  private signJwt(userId: ObjectId): string {
+  private signJwt(userId: String): string {
     const secretKey = process.env.JWT_SECRET || 'bluebanana';
     return jwt.sign({ userId }, secretKey, { expiresIn: '1h' });
   }
@@ -49,7 +49,7 @@ export class UserService implements IUserService {
     }
     
 
-    public async getUserById(userId: ObjectId): Promise<IUser | null> {
+    public async getUserById(userId: String): Promise<IUser | null> {
       try {
         const user = await UserModel.findById(userId);
         return user;
@@ -85,7 +85,7 @@ export class UserService implements IUserService {
       return this.signJwt(user._id);
     }
     
-    public async updateUserById(userId: ObjectId, updateUserDto: CreateUpdateUserDto): Promise<IUser | null> {
+    public async updateUserById(userId: String, updateUserDto: CreateUpdateUserDto): Promise<IUser | null> {
       try {
         const user = await UserModel.findByIdAndUpdate(userId, updateUserDto, { new: true });
         return user;
@@ -94,7 +94,7 @@ export class UserService implements IUserService {
       }
     }
   
-    public async deleteUserById(userId: ObjectId): Promise<boolean> {
+    public async deleteUserById(userId: String): Promise<boolean> {
       try {
         const result = await UserModel.findByIdAndDelete(userId);
         return result !== null;

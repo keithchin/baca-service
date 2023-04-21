@@ -22,7 +22,7 @@ export class SubforumController {
   getSubforum = async(req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const subforum = await this.subforumService.getSubforumById(new mongoose.Schema.Types.ObjectId(id));
+      const subforum = await this.subforumService.getSubforumById(id);
       if (subforum) {
         res.status(200).json(subforum);
       } else {
@@ -48,7 +48,7 @@ export class SubforumController {
     try {
       const { id } = req.params;
       const { title, description } = req.body;
-      const subforum = await this.subforumService.updateSubforumById(new mongoose.Schema.Types.ObjectId(id),{ title, description});
+      const subforum = await this.subforumService.updateSubforumById(id,{ title, description});
       if (subforum) {
         res.status(200).json(subforum);
       } else {
@@ -63,7 +63,7 @@ export class SubforumController {
   deleteSubforum = async(req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const subforum = await this.subforumService.deleteSubforumById(new mongoose.Schema.Types.ObjectId(id));
+      const subforum = await this.subforumService.deleteSubforumById(id);
       if (subforum) {
         res.status(200).json(subforum);
       } else {

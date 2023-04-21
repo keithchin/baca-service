@@ -28,7 +28,7 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  public async getSubforumById(id: ObjectId): Promise<ISubforum | null> {
+  public async getSubforumById(id: String): Promise<ISubforum | null> {
     try {
       const subforum = await SubforumModel.findById(id);
       return subforum;
@@ -38,7 +38,7 @@ export class SubforumService implements ISubforumService {
   }
 
   public async updateSubforumById(
-    id: ObjectId,
+    id: String,
     updateSubforumDto: UpdateSubforumDto
   ): Promise<ISubforum | null> {
     try {
@@ -52,7 +52,7 @@ export class SubforumService implements ISubforumService {
     }
   }
 
-  public async deleteSubforumById(id: ObjectId): Promise<boolean> {
+  public async deleteSubforumById(id: String): Promise<boolean> {
     try {
       const result = await SubforumModel.deleteOne({ _id: id });
       return result.deletedCount === 1;

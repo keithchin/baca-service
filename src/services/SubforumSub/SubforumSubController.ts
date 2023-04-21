@@ -79,7 +79,7 @@ export class SubforumSubController {
   getSubscribers = async (req: Request, res: Response) => {
     try {
       const { subforumId } = req.params;
-      const subscribers = await this.subforumSubService.getSubscribers(new mongoose.Schema.Types.ObjectId(subforumId));
+      const subscribers = await this.subforumSubService.getSubscribers(subforumId);
       res.status(200).json(subscribers);
     } catch (error) {
       console.error(error);

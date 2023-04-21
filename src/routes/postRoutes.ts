@@ -17,7 +17,8 @@ const asyncHandler = (fn:RequestHandler) => (req:Request, res:Response, next:Nex
 
   
 postRoutes.get('/', postController.getAllPosts);
+postRoutes.get('/sub/:id', postController.getPostsBySubforum);
+postRoutes.get('/:id', postController.getPost);
 postRoutes.post('/', postController.createPost);
-postRoutes.post('/:id', postController.getPost);
 postRoutes.put('/:id', postController.updatePost);
 postRoutes.delete('/:id', postController.deletePost);

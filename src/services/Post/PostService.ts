@@ -19,7 +19,7 @@ export class PostService implements IPostService {
     return await PostModel.find({});
   }
 
-  public async getPostById(postId: ObjectId): Promise<IPost | null> {
+  public async getPostById(postId: String): Promise<IPost | null> {
     return await PostModel.findById(postId);
   }
 
@@ -41,16 +41,16 @@ export class PostService implements IPostService {
     return post;
   }
 
-  public async updatePostById(postId: ObjectId, update: UpdatePostDto): Promise<IPost | null> {
+  public async updatePostById(postId: String, update: UpdatePostDto): Promise<IPost | null> {
     return await PostModel.findByIdAndUpdate(postId, update, { new: true });
   }
 
-  public async deletePostById(postId: ObjectId): Promise<number> {
+  public async deletePostById(postId: String): Promise<number> {
     const result = await PostModel.deleteOne({ _id: postId });
     return result.deletedCount ?? 0;
   }
   
-  public async upvotePost(userId: ObjectId, postId: ObjectId): Promise<IPost> {
+  public async upvotePost(userId: String, postId: String): Promise<IPost> {
     const user = await this.userService.getUserById(userId);
     const post = await this.getPostById(postId);
   
@@ -111,7 +111,7 @@ export class PostService implements IPostService {
     return post;
   }
 
-  public async downvotePost(userId: ObjectId, postId: ObjectId): Promise<IPost> {
+  public async downvotePost(userId: String, postId: String): Promise<IPost> {
     const user = await this.userService.getUserById(userId);
     const post = await this.getPostById(postId);
   
@@ -176,11 +176,11 @@ export class PostService implements IPostService {
     return post;
   }
   
-  public async getPostsBySubforum(subforumId: ObjectId): Promise<IPost[]> {
+  public async getPostsBySubforum(subforumId: String): Promise<IPost[]> {
     return await PostModel.find({ subforum: subforumId });
   }
 
-  public async getPostsByAuthor(authorId: ObjectId): Promise<IPost[]> {
+  public async getPostsByAuthor(authorId: String): Promise<IPost[]> {
     return await PostModel.find({ author: authorId });
   }
 

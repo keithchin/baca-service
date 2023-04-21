@@ -15,8 +15,8 @@ export class SubforumSubService implements ISubforumSubService {
     
 
   public async subscribeToSubforum(
-    userId: ObjectId,
-    subforumId: ObjectId
+    userId: String,
+    subforumId: String
   ): Promise<ISubforumSub> {
     const user = await this.userService.getUserById(userId);
     const subforum = await this.subforumService.getSubforumById(subforumId);
@@ -48,8 +48,8 @@ export class SubforumSubService implements ISubforumSubService {
   }
 
   public async unsubscribeFromSubforum(
-    userId: ObjectId,
-    subforumId: ObjectId
+    userId: String,
+    subforumId: String
   ): Promise<boolean> {
     const existingSubscription = await SubforumSubModel.findOne({
       userId,
@@ -69,7 +69,7 @@ export class SubforumSubService implements ISubforumSubService {
     return subscriptions;
   }
 
-  public async getSubscribers(subforumId: ObjectId): Promise<ISubforumSub[]> {
+  public async getSubscribers(subforumId: String): Promise<ISubforumSub[]> {
     const subscribers = await SubforumSubModel.find({ subforumId });
     return subscribers;
   }

@@ -31,7 +31,7 @@ export class PostController {
   public getPost = async (req: Request, res: Response) => {
     try {
       const { postId } = req.params;
-      const post = await this.postService.getPostById(new mongoose.Schema.Types.ObjectId(postId));
+      const post = await this.postService.getPostById(postId);
       res.status(200).json(post);
     } catch (error) {
       console.error(error);
@@ -39,10 +39,21 @@ export class PostController {
     }
   };
 
+  public getPostsBySubforum = async (req: Request, res: Response) => {
+    try {
+      const { subforumId } = req.params;
+      const post = await this.postService.getPostsBySubforum(subforumId);
+      res.status(200).json(post);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error getting post');
+    }
+  }
+
   public updatePost = async (req: Request, res: Response) => {
     try {
       const { postId } = req.params;
-      const post = await this.postService.updatePostById(new mongoose.Schema.Types.ObjectId(postId), req.body);
+      const post = await this.postService.updatePostById(postId, req.body);
       res.status(200).json(post);
     } catch (error) {
       console.error(error);
@@ -53,7 +64,7 @@ export class PostController {
   public deletePost = async (req: Request, res: Response) => {
     try {
       const { postId } = req.params;
-      await this.postService.deletePostById(new mongoose.Schema.Types.ObjectId(postId));
+      await this.postService.deletePostById(postId);
       res.status(200).send('Post deleted successfully');
     } catch (error) {
       console.error(error);
