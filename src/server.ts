@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
@@ -9,6 +10,7 @@ import { postRoutes } from './routes/postRoutes';
 import { ConnectOptions } from 'mongoose';
 import net from 'net';
 
+
 const DEFAULT_PORT = 3000;
 
 
@@ -17,6 +19,7 @@ let port = process.env.PORT || DEFAULT_PORT;
 dotenv.config();
 
 const app = express();
+app.use(cors);
 
 
 /**
