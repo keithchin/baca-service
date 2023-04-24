@@ -30,8 +30,10 @@ export class PostController {
 
   public getPost = async (req: Request, res: Response) => {
     try {
-      const { postId } = req.params;
-      const post = await this.postService.getPostById(postId);
+      const { id } = req.params;
+      console.log(req.params);
+      console.log(id);
+      const post = await this.postService.getPostById(id);
       res.status(200).json(post);
     } catch (error) {
       console.error(error);
@@ -75,6 +77,7 @@ export class PostController {
   public setVote = async (req: Request, res: Response) => {
     try {
       const { userId, postId, voteType } = req.body;
+      console.log("req body" + JSON.stringify(req.body));
       if(voteType === 'downvote') {
         await this.postService.downvotePost(userId, postId);
       } else {

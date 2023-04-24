@@ -1,4 +1,4 @@
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model , Types } from 'mongoose';
 import { IPost } from '@src/interfaces/Post/IPost';
 import { IPostService } from '@src/interfaces/Post/IPostService';
 import { IUserService } from '@src/interfaces/User/IUserService';
@@ -8,6 +8,7 @@ import CreatePostDto from '@src/dto/Post/CreatePostDto';
 import UpdatePostDto from '@src/dto/Post/UpdatePostDto';
 
 const PostModel: Model<IPost> = postModel;
+const ObjectId = require('mongodb').ObjectId;
 
 export class PostService implements IPostService {
     constructor(
@@ -17,12 +18,12 @@ export class PostService implements IPostService {
     
   public async getAllPosts(): Promise<IPost[]> {
     return await PostModel.find({})
-    .populate('author')
+    .populate('authorId', 'username')
     .populate('subforumId');
   }
 
   public async getPostById(postId: String): Promise<IPost | null> {
-    return await PostModel.findById(postId);
+    return await PostModel.findById(postId).populate('authorId');
   }
 
   public async createPost(createPostDto: CreatePostDto): Promise<IPost> {
@@ -53,6 +54,7 @@ export class PostService implements IPostService {
   }
   
   public async upvotePost(userId: String, postId: String): Promise<IPost> {
+    console.log('user id : ' + userId);
     const user = await this.userService.getUserById(userId);
     const post = await this.getPostById(postId);
   
@@ -64,13 +66,13 @@ export class PostService implements IPostService {
       throw new Error('Post not found');
     }
   
-    if (post.author._id.toString() === userId.toString()) {
-      throw new Error('Cannot upvote own post.');
-    }
-  
+    // if (post.authorId.toString() === userId.toString()) {
+    //   throw new Error('Cannot upvote own post.');
+    // }
+
     const existingUpvote = await PostModel.findOne({
-      _id: post._id,
-      upvotedBy: userId.toString(),
+      _id: postId,
+      upvotedBy: userId,
     });
   
     if (existingUpvote) {
@@ -78,13 +80,13 @@ export class PostService implements IPostService {
     }
   
     const existingDownvote = await PostModel.findOne({
-      _id: post._id,
-      downvotedBy: userId.toString(),
+      _id: postId,
+      downvotedBy: userId,
     });
   
     if (existingDownvote) {
       await PostModel.updateOne(
-        { _id: post._id },
+        { _id: postId.toString() },
         {
           $pull: { downvotedBy: userId.toString() },
           $push: { upvotedBy: userId.toString() },
@@ -93,7 +95,7 @@ export class PostService implements IPostService {
       );
     } else {
       await PostModel.updateOne(
-        { _id: post._id },
+        { _id: postId.toString() },
         {
           $push: { upvotedBy: userId.toString() },
           $inc: { voteScore: 1 },

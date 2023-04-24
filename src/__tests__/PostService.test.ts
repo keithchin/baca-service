@@ -71,7 +71,7 @@ describe('PostService', () => {
       // Validate post data
       expect(post.title).toEqual(createPostDto.title);
       expect(post.content).toEqual(createPostDto.content);
-      expect(post.author._id.toString()).toEqual(createPostDto.author._id);
+      expect(post.authorId.toString()).toEqual(createPostDto.author._id);
       expect(post.subforumId.toString()).toEqual(createPostDto.subforumId);
     });
   
@@ -151,7 +151,7 @@ describe('PostService', () => {
       // Validate post data
       expect(foundPost?.title).toEqual(post.title);
       expect(foundPost?.content).toEqual(post.content);
-      expect(foundPost?.author._id.toString()).toEqual(post.author._id.toString());
+      expect(foundPost?.authorId.toString()).toEqual(post.authorId.toString());
       expect(foundPost?.subforumId.toString()).toEqual(post.subforumId.toString());
     });
 

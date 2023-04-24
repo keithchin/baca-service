@@ -3,7 +3,7 @@ import { Document, ObjectId, Types } from 'mongoose';
 export  interface IPost extends Document {
     title: string;
     content: string;  
-    author: Types.ObjectId;
+    authorId: ObjectId;
     subforumId: Types.ObjectId;
     upvotes: ObjectId[];
     downvotes: ObjectId[];
