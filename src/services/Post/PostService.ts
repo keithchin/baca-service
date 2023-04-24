@@ -145,23 +145,14 @@ export class PostService implements IPostService {
       upvotedBy: userId.toString(),
     });
   
-    if (existingDownvote) {
-      // Remove the user's downvote
-      await PostModel.updateOne(
-        { _id: post._id },
-        {
-          $pull: { downvotedBy: userId.toString() },
-          $inc: { voteScore: 1 },
-        }
-      );
-    } else if (existingUpvote) {
+    if (existingUpvote) {
       // Change the user's upvote to a downvote
       await PostModel.updateOne(
         { _id: post._id },
         {
           $pull: { upvotedBy: userId.toString() },
           $push: { downvotedBy: userId.toString() },
-          $inc: { voteScore: -2 },
+          $inc: { voteScore: -1 },
         }
       );
     } else {
