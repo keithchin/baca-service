@@ -22,3 +22,4 @@ postRoutes.get('/:id', postController.getPost);
 postRoutes.post('/', postController.createPost);
 postRoutes.put('/:id', postController.updatePost);
 postRoutes.delete('/:id', postController.deletePost);
+postRoutes.post('/vote', postController.setVote);

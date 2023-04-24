@@ -71,4 +71,18 @@ export class PostController {
       res.status(500).send('Error deleting post');
     }
   };
+
+  public setVote = async (req: Request, res: Response) => {
+    try {
+      const { userId, postId, voteType } = req.body;
+      if(voteType === 'downvote') {
+        await this.postService.downvotePost(userId, postId);
+      } else {
+        await this.postService.upvotePost(userId, postId);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(`Error. Cant ${req.body.voteType} post.`)
+    }
+  }
 }

@@ -19,7 +19,7 @@ let port = process.env.PORT || DEFAULT_PORT;
 dotenv.config();
 
 const app = express();
-app.use(cors);
+app.use(cors());
 
 
 /**
