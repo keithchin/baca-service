@@ -78,14 +78,16 @@ export class PostController {
     try {
       const { userId, postId, voteType } = req.body;
       console.log("req body" + JSON.stringify(req.body));
+      let voteScore;
       if(voteType === 'downvote') {
-        await this.postService.downvotePost(userId, postId);
+        voteScore = await this.postService.downvotePost(userId, postId);
       } else {
-        await this.postService.upvotePost(userId, postId);
+        voteScore = await this.postService.upvotePost(userId, postId);
       }
+      res.status(200).json({ voteScore });
     } catch (error) {
       console.error(error);
-      res.status(500).send(`Error. Cant ${req.body.voteType} post.`)
+      res.status(500).send(`Error. Can't ${req.body.voteType} post.`)
     }
   }
 }

@@ -9,8 +9,8 @@ export interface IPostService {
   createPost(createPostDto: CreatePostDto): Promise<IPost>;
   updatePostById(postId: String, update: UpdatePostDto): Promise<IPost | null>;
   deletePostById(postId: String): Promise<number>;
-  upvotePost(postId: String, userId: string): Promise<{ status: number, message: string, post?: IPost }>;
-  downvotePost(postId: String, userId: string): Promise<{ status: number, message: string, post?: IPost }>;
+  upvotePost(postId: String, userId: string): Promise<number>;
+  downvotePost(postId: String, userId: string): Promise<number>;
   getPostsBySubforum(subforumId: String): Promise<IPost[]>;
   getPostsByAuthor(authorId: String): Promise<IPost[]>;
   removeAll(): Promise<void>;

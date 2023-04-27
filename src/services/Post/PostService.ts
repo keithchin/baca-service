@@ -53,17 +53,17 @@ export class PostService implements IPostService {
     return result.deletedCount ?? 0;
   }
   
-  public async upvotePost(userId: String, postId: String): Promise<{ status: number, message: string, post?: IPost }> {
+  public async upvotePost(userId: String, postId: String): Promise<number> {
     console.log('user id : ' + userId);
     const user = await this.userService.getUserById(userId);
     const post = await this.getPostById(postId);
   
     if (!user) {
-      return { status: 404, message: 'User not found' };
+      throw new Error('User not found');
     }
   
     if (!post) {
-      return { status: 404, message: 'Post not found' };
+      throw new Error('Post not found');
     }
   
     // if (post.authorId.toString() === userId.toString()) {
@@ -76,7 +76,7 @@ export class PostService implements IPostService {
     });
   
     if (existingUpvote) {
-      return { status: 400, message: 'User has already upvoted this post.' };
+      throw new Error('User has already upvoted this post.');
     }
   
   
@@ -106,7 +106,7 @@ export class PostService implements IPostService {
   
     const upvotedPost = await this.getPostById(postId);
     if (!upvotedPost) {
-      return { status: 404, message: 'Post not found' };
+      throw new Error('Post not found');
     }
 
 
@@ -116,19 +116,19 @@ export class PostService implements IPostService {
     post.voteScore = Math.max(upvotedPost.voteScore, 0);
 
 
-    return { status: 200, message: 'Post upvoted successfully', post: upvotedPost };
+    return post.voteScore;
   }
 
-  public async downvotePost(userId: String, postId: String): Promise<{ status: number, message: string, post?: IPost }> {
+  public async downvotePost(userId: String, postId: String): Promise<number> {
     const user = await this.userService.getUserById(userId);
     const post = await this.getPostById(postId);
   
     if (!user) {
-      return { status: 404, message: 'User not found' };
+      throw new Error('User not found');
     }
   
     if (!post) {
-      return { status: 404, message: 'Post not found' };
+      throw new Error('Post not found');
     }
   
     const existingDownvote = await PostModel.findOne({
@@ -137,7 +137,7 @@ export class PostService implements IPostService {
     });
 
     if (existingDownvote) {
-      return { status: 400, message: 'User has already downvoted this post.' };
+      throw new Error('User has already downvoted this post.');
     }
   
     const existingUpvote = await PostModel.findOne({
@@ -169,7 +169,7 @@ export class PostService implements IPostService {
     const downvotedPost = await PostModel.findOne({ _id: postId }, { upvotedBy: 1, downvotedBy: 1, voteScore: 1, _id: 0 });
     
     if (!downvotedPost) {
-      return { status: 404, message: 'Post not found' };
+      throw new Error('Post not found');
     }
 
     post.upvotedBy = downvotedPost.upvotedBy;
@@ -177,7 +177,7 @@ export class PostService implements IPostService {
     post.voteScore = Math.max(downvotedPost.voteScore, 0);
 
 
-    return { status: 200, message: 'Post upvoted successfully', post: downvotedPost };
+    return post.voteScore;
   }
   
   public async getPostsBySubforum(subforumId: String): Promise<IPost[]> {

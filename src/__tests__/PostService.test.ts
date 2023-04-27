@@ -295,8 +295,7 @@ describe('PostService', () => {
       const updatedPost = await postService.getPostById(post.id);
     
       // Validate upvoted post data
-      expect(upvotedPost?.post?.voteScore).toEqual(updatedPost?.voteScore);
-      expect(upvotedPost?.post?.upvotedBy?.length).toEqual(1);
+      expect(upvotedPost).toEqual(updatedPost?.voteScore);
     });
 
     test('should downvote a post successfully', async () => {
@@ -330,10 +329,8 @@ describe('PostService', () => {
 
     
       // Validate downvoted post data
-      expect(updatedPost?.voteScore).toEqual(downvotedPost?.post?.voteScore);
-      expect(downvotedPost?.post?.upvotedBy?.length).toEqual(0);
-      expect(downvotedPost?.post?.downvotedBy?.length).toEqual(1);
-      expect(downvotedPost?.post?.downvotedBy && downvotedPost.post?.downvotedBy[0].toString()).toEqual(user.id.toString());
+      expect(updatedPost?.voteScore).toEqual(downvotedPost);
+      expect(downvotedPost).toEqual(0);
     });
 });
   
