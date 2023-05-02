@@ -27,8 +27,7 @@ export class PostService implements IPostService {
   }
 
   public async createPost(createPostDto: CreatePostDto): Promise<IPost> {
-    console.log(createPostDto.author._id);
-    const user = await this.userService.getUserById(createPostDto.author._id);
+    const user = await this.userService.getUserById(createPostDto.authorId);
 
     if (!user) {
       throw new Error('User not found');
